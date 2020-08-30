@@ -1,4 +1,5 @@
 package br.com.connectall.pousada;
+
 import br.com.connectall.pousada.bd.ConexaoBD;
 import br.com.connectall.pousada.bd.ConexaoQuarto;
 import br.com.connectall.pousada.models.Quarto;
@@ -31,7 +32,7 @@ public class PousadaApplication {
             opcao = scan.nextInt();
             scan.nextLine();
 
-            switch (opcao){
+            switch (opcao) {
                 case 1:
                     realizarReserva(scan);
                     break;
@@ -43,9 +44,10 @@ public class PousadaApplication {
                     break;
 
             }
-        }while (opcao != 0);
+        } while (opcao != 0);
         scan.close();
     }
+
     private static void realizarReserva(Scanner scan) {
         Reserva reserva = new Reserva();
 
@@ -62,23 +64,22 @@ public class PousadaApplication {
         System.out.println("Quantas pessoas ficarão hospedadas: ");
         qtdePessoas = scan.nextInt();
         scan.nextLine();
-        if (quarto.getMaxPessoas() < qtdePessoas){
+        if (quarto.getMaxPessoas() < qtdePessoas) {
             System.err.println("O número de hospedes excede o limite do quarto.");
-        }else {
+        } else {
             try {
-                if (cq.verificaDisponibilidadeQuarto(numeroQuarto)){
+                if (cq.verificaDisponibilidadeQuarto(numeroQuarto)) {
                     reserva.setQuarto(cq.retornaQuarto(numeroQuarto));
                     reserva.setDataEntrada(LocalDate.now());
                     reserva.setQtdePessoas(qtdePessoas);
                     cbd.salvar(reserva);
-                }else {
+                } else {
                     System.err.println("O quarto solicitado está reservado!");
                 }
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-
 
 
     }
