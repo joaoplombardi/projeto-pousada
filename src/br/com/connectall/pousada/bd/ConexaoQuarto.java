@@ -31,8 +31,9 @@ public class ConexaoQuarto {
 
     public Quarto retornaQuarto(int idQuarto){
         Quarto quarto = new Quarto();
+
         try {
-            Statement stmnt = this.conn.createStatement();
+            Statement stmnt = conn.createStatement();
             ResultSet result = stmnt.executeQuery("select * from t_pousada_quartos where id_quarto = "+idQuarto+";");
             do {
                 Integer id = result.getInt("id_quarto");
@@ -49,6 +50,7 @@ public class ConexaoQuarto {
             System.err.println("Erro na busca do quarto!");
             e.printStackTrace();
         }
+
         return quarto;
     }
 

@@ -17,8 +17,8 @@ public class ConexaoBD {
 
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            this.conn = DriverManager.getConnection("jdbc:oracle:thin:@oracle.fiap.com.br:1521:orcl", "",
-                    "");
+            this.conn = DriverManager.getConnection("jdbc:oracle:thin:@oracle.fiap.com.br:1521:orcl", "RM86433  ",
+                    "110701");
         } catch (ClassNotFoundException e) {
             System.err.println("O driver não foi encontrado!: " + e.getMessage());
             e.printStackTrace();
