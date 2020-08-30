@@ -22,6 +22,7 @@ public class PousadaApplication {
     }
 
     public static void main(String[] args) {
+        menu();
         int opcao;
         Scanner scan = new Scanner(System.in);
         do {
