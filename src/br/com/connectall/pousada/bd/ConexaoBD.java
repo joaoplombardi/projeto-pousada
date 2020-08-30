@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.Date;
 import java.util.stream.Collectors;
+import java.lang.Class;
 
 public class ConexaoBD {
 
@@ -20,6 +21,7 @@ public class ConexaoBD {
                     "");
         } catch (ClassNotFoundException e) {
             System.err.println("O driver não foi encontrado!: " + e.getMessage());
+            e.printStackTrace();
         }catch (SQLException e){
             System.err.println("Ocorreu um erro na conexão com o Banco de Dados: " + e.getMessage());
         }

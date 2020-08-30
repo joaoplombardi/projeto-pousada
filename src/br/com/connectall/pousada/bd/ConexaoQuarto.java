@@ -52,12 +52,16 @@ public class ConexaoQuarto {
         return quarto;
     }
 
-    public boolean verificaDisponibilidadeQuarto(int numero)throws SQLException{
-
-        Statement stmnt = this.conn.createStatement();
-        ResultSet result = stmnt.executeQuery("select * from t_pousada_reservas where id_quarto = "+numero+";");
-        return result != null;
-
+    public boolean verificaDisponibilidadeQuarto(int numero){
+        Boolean disponivel = null;
+        try {
+            Statement stmnt = this.conn.createStatement();
+            ResultSet result = stmnt.executeQuery("select * from t_pousada_reservas where id_quarto = "+numero+";");
+            disponivel = result != null;
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return disponivel;
     }
 
 }

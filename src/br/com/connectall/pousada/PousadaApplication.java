@@ -1,6 +1,7 @@
 package br.com.connectall.pousada;
 import br.com.connectall.pousada.bd.ConexaoBD;
 import br.com.connectall.pousada.bd.ConexaoQuarto;
+import br.com.connectall.pousada.models.Quarto;
 import br.com.connectall.pousada.models.Reserva;
 
 import java.sql.SQLException;
@@ -55,28 +56,31 @@ public class PousadaApplication {
         System.out.println("Digite o quarto que deseja: ");
         numeroQuarto = scan.nextInt();
         scan.nextLine();
-
-
-        LocalDate dataEntrada = LocalDate.now();
+        Quarto quarto = cq.retornaQuarto(numeroQuarto);
 
         int qtdePessoas = 0;
         System.out.println("Quantas pessoas ficarão hospedadas: ");
         qtdePessoas = scan.nextInt();
         scan.nextLine();
-
-
-        try {
-            if (cq.verificaDisponibilidadeQuarto(numeroQuarto)){
-                reserva.setQuarto(cq.retornaQuarto(numeroQuarto));
-                reserva.setDataEntrada(dataEntrada);
-                reserva.setQtdePessoas(qtdePessoas);
-                cbd.salvar(reserva);
-            }else {
-                System.err.println("O quarto solicitado está reservado!");
+        if (quarto.getMaxPessoas() < qtdePessoas){
+            System.err.println("O número de hospedes excede o limite do quarto.");
+        }else {
+            try {
+                if (cq.verificaDisponibilidadeQuarto(numeroQuarto)){
+                    reserva.setQuarto(cq.retornaQuarto(numeroQuarto));
+                    reserva.setDataEntrada(LocalDate.now());
+                    reserva.setQtdePessoas(qtdePessoas);
+                    cbd.salvar(reserva);
+                }else {
+                    System.err.println("O quarto solicitado está reservado!");
+                }
+            }catch (SQLException e){
+                e.printStackTrace();
             }
-        }catch (SQLException e){
-            e.printStackTrace();
         }
+
+
+
     }
 
     private static void consultarReservas() {
