@@ -22,6 +22,12 @@ public class Reserva {
         this.dataSaida = dataSaida;
         this.qtdePessoas = qtdePessoas;
     }
+    public Reserva(Integer id, Quarto quarto, LocalDate dataEntrada, Integer qtdePessoas) {
+        this.id = id;
+        this.quarto = quarto;
+        this.dataEntrada = dataEntrada;
+        this.qtdePessoas = qtdePessoas;
+    }
 
     public int getId() {
         return id;
@@ -69,7 +75,8 @@ public class Reserva {
                 "Quarto: %s\n" +
                 "Data de Check-in: %s\n" +
                 "Data de Check-out: %s\n" +
-                "Quantidade de pessoas: %s", id, quarto, dataEntrada, dataSaida, qtdePessoas);
+                "Quantidade de pessoas: %s\n" +
+                "______________________________", id, quarto.getNumero(), dataEntrada, dataSaida, qtdePessoas);
     }
 
 }
