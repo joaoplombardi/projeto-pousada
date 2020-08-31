@@ -13,8 +13,8 @@ public class ConexaoQuarto {
     public ConexaoQuarto() {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            this.conn = DriverManager.getConnection("jdbc:oracle:thin:@oracle.fiap.com.br:1521:orcl", "RM86433",
-                    "110701");
+            this.conn = DriverManager.getConnection("jdbc:oracle:thin:@oracle.fiap.com.br:1521:orcl", "",
+                    "");
         } catch (ClassNotFoundException e) {
             System.err.println("O driver não foi encontrado!: " + e.getMessage());
             e.printStackTrace();
