@@ -1,4 +1,5 @@
 package br.com.connectall.pousada;
+
 import br.com.connectall.pousada.bd.ConexaoBD;
 import br.com.connectall.pousada.bd.ConexaoQuarto;
 import br.com.connectall.pousada.models.Pousada;
@@ -6,11 +7,7 @@ import br.com.connectall.pousada.models.Quarto;
 import br.com.connectall.pousada.models.Reserva;
 
 import java.sql.SQLException;
-import java.sql.SQLOutput;
-import java.text.spi.DateFormatProvider;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Scanner;
 
 public class PousadaApplication {
@@ -26,23 +23,24 @@ public class PousadaApplication {
         System.out.println("| 0.) Sair                             |");
         System.out.println("|______________________________________|");
     }
-    public static void criandoQuartos(){
+
+    public static void criandoQuartos() {
         ConexaoQuarto cq = new ConexaoQuarto();
 
-    try {
-        for (int i = 11; i < 26; i++){
-            if (i <= 20){
-                Quarto quarto = new Quarto(i, 5 , 50.0);
-                cq.salvarQuarto(quarto);
-            }else {
-                Quarto quarto = new Quarto(i, 10 , 100.0);
-                cq.salvarQuarto(quarto);
+        try {
+            for (int i = 11; i < 26; i++) {
+                if (i <= 20) {
+                    Quarto quarto = new Quarto(i, 5, 50.0);
+                    cq.salvarQuarto(quarto);
+                } else {
+                    Quarto quarto = new Quarto(i, 10, 100.0);
+                    cq.salvarQuarto(quarto);
+                }
             }
+            cq.desconectaBanco();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        cq.desconectaBanco();
-    }catch (SQLException e){
-        e.printStackTrace();
-    }
 
 
     }
@@ -56,7 +54,7 @@ public class PousadaApplication {
             opcao = scan.nextInt();
             scan.nextLine();
 
-            switch (opcao){
+            switch (opcao) {
                 case 1:
                     realizarReserva(scan);
                     break;
@@ -67,9 +65,10 @@ public class PousadaApplication {
                     finalizarReserva();
                     break;
             }
-        }while (opcao != 0);
+        } while (opcao != 0);
         scan.close();
     }
+
     private static void realizarReserva(Scanner scan) {
         Reserva reserva = new Reserva();
 
@@ -80,44 +79,46 @@ public class PousadaApplication {
         System.out.println(" ________________________________________________ ");
         System.out.println("|                                                |");
         System.out.println("| Apartamentos de 11 a 20 | VIP de 21 a 25       |");
-        System.out.print  ("| Digite o quarto que deseja:                    | ");
+        System.out.print("| Digite o quarto que deseja:                    | ");
         numeroQuarto = scan.nextInt();
         scan.nextLine();
         Quarto quarto = cq.retornaQuarto(numeroQuarto);
 
         int qtdePessoas = 0;
-        System.out.print  ("| Quantas pessoas ficarão hospedadas:            |");
+        System.out.print("| Quantas pessoas ficarão hospedadas:            |");
         qtdePessoas = scan.nextInt();
         scan.nextLine();
-        if (quarto.getMaxPessoas() < qtdePessoas){
+        if (quarto.getMaxPessoas() < qtdePessoas) {
             System.err.println("O número de hospedes excede o limite do quarto.");
             System.exit(0);
-        }else {
+        } else {
             try {
-                if (cq.verificaDisponibilidadeQuarto(numeroQuarto)){
+                if (cq.verificaDisponibilidadeQuarto(numeroQuarto)) {
                     reserva.setQuarto(cq.retornaQuarto(numeroQuarto));
                     reserva.setDataEntrada(LocalDate.now());
                     reserva.setQtdePessoas(qtdePessoas);
                     cbd.salvar(reserva);
-
-                }else {
+                    System.out.println("| Sua reserva foi realizada!                     |");
+                    System.out.println(" ------------------------------------------------ ");
+                } else {
                     System.err.print("O quarto solicitado está reservado!");
-                    System.exit(0);
+                    menu();
                 }
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        System.out.println("| Sua reserva foi realizada!                     |");
-        System.out.println(" ------------------------------------------------ ");
-        try{
+
+        //        menu();
+
+        try {
             cbd.desconectaBanco();
             cq.desconectaBanco();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.err.println("A conexão com o Banco de Dados não finalizou");
         }
 
-        menu();
+
     }
 
     private static void consultarReservas() {
@@ -137,8 +138,7 @@ public class PousadaApplication {
         System.out.println("Digite o numero do quarto que estava hospedado: ");
         numeroQuarto = scan.nextInt();
         scan.nextLine();
-        try{
-
+        try {
             reserva.setId(cbd.retornaUmaReserva(numeroQuarto).getId());
             reserva.setQuarto(cbd.retornaUmaReserva(numeroQuarto).getQuarto());
             reserva.setDataEntrada(cbd.retornaUmaReserva(numeroQuarto).getDataEntrada());
@@ -147,12 +147,11 @@ public class PousadaApplication {
             System.out.printf("Reserva finalizada!\nO valor a ser pago é R$%s", reserva.calcularValorFinal());
 
             cbd.uptadeReserva(reserva);
-            System.exit(0);
-        }catch (SQLException e){
+
+            menu();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
-
 
 }

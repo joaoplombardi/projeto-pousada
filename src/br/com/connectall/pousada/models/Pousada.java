@@ -3,8 +3,7 @@ package br.com.connectall.pousada.models;
 import br.com.connectall.pousada.bd.ConexaoBD;
 
 import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 public class Pousada {
 
@@ -14,7 +13,7 @@ public class Pousada {
         try {
             ConexaoBD cbd = new ConexaoBD();
             this.reservas = cbd.consultar();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -22,8 +21,9 @@ public class Pousada {
     public List<Reserva> getReservas() {
         return reservas;
     }
+
     public void retornarPousada() {
-            this.reservas.forEach(System.out::println);
+        this.reservas.forEach(System.out::println);
     }
 
 }

@@ -10,8 +10,6 @@ public class Reserva {
     private LocalDate dataSaida;
     private Integer qtdePessoas;
 
-
-
     public Reserva() {
 
     }
@@ -23,6 +21,7 @@ public class Reserva {
         this.dataSaida = dataSaida;
         this.qtdePessoas = qtdePessoas;
     }
+
     public Reserva(Integer id, Quarto quarto, LocalDate dataEntrada, Integer qtdePessoas) {
         this.id = id;
         this.quarto = quarto;
@@ -80,7 +79,7 @@ public class Reserva {
                 "______________________________", id, quarto.getNumero(), dataEntrada, dataSaida, qtdePessoas);
     }
 
-    public void finalizarReserva(){
+    public void finalizarReserva() {
         this.dataSaida = LocalDate.now();
     }
 

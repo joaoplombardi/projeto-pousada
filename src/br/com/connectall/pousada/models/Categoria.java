@@ -4,7 +4,7 @@ public enum Categoria {
     VIP("VIP"), APARTAMENTO("APARTAMENTO");
     private String value;
 
-    Categoria(String value){
+    Categoria(String value) {
         this.value = value;
     }
 
