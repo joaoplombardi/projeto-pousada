@@ -91,7 +91,7 @@ public class PousadaApplication {
         scan.nextLine();
         if (quarto.getMaxPessoas() < qtdePessoas) {
             System.err.println("O número de hospedes excede o limite do quarto.");
-            System.exit(0);
+            menu();
         } else {
             try {
                 if (cq.verificaDisponibilidadeQuarto(numeroQuarto)) {
