@@ -1,13 +1,14 @@
 package br.com.connectall.pousada.bd;
 import br.com.connectall.pousada.models.Quarto;
 import br.com.connectall.pousada.models.Reserva;
+import com.sun.source.doctree.StartElementTree;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.Date;
 import java.util.stream.Collectors;
 import java.lang.Class;
 
@@ -18,8 +19,8 @@ public class ConexaoBD {
 
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            this.conn = DriverManager.getConnection("jdbc:oracle:thin:@oracle.fiap.com.br:1521:orcl", "",
-                    "");
+            this.conn = DriverManager.getConnection("jdbc:oracle:thin:@oracle.fiap.com.br:1521:orcl", "RM86433",
+                    "110701");
         } catch (ClassNotFoundException e) {
             System.err.println("O driver não foi encontrado!: " + e.getMessage());
             e.printStackTrace();
@@ -34,28 +35,56 @@ public class ConexaoBD {
         ResultSet resultReserva = stmnt.executeQuery("select * from t_pousada_reserva");
         List<Reserva> reservas = new ArrayList<>();
         while(resultReserva.next()) {
-//            resultReserva.next();
 
             Integer id = resultReserva.getInt("id_reserva");
             Integer quarto = resultReserva.getInt("id_quarto");
-            java.sql.Date dataEntrada = resultReserva.getDate("dt_entrada");
-    //        java.sql.Date dataSaida = resultReserva.getDate("dt_saida");
+            Date dataEntrada = resultReserva.getDate("dt_entrada");
+            Date dataSaida = resultReserva.getDate("dt_saida");
             Integer qtdePessoas = resultReserva.getInt("qt_pessoas");
             
             LocalDate dtEntrada = dataEntrada.toLocalDate();
-//            LocalDate dtSaida = dataSaida.toLocalDate();
+
 
             ConexaoQuarto cq = new ConexaoQuarto();
-            List<Quarto> quartoFiltrado = cq.consultarTodosQuartos().stream()
-                  .filter(quartoFiltro -> quarto == quartoFiltro.getNumero())
-                  .collect(Collectors.toList());
-            Quarto quartoFinal = quartoFiltrado.get(0);
+//            List<Quarto> quartoFiltrado = cq.consultarTodosQuartos().stream()
+//                  .filter(quartoFiltro -> quarto == quartoFiltro.getNumero())
+//                  .collect(Collectors.toList());
+//            Quarto quartoFinal = quartoFiltrado.get(0);
+            Quarto quartoFinal = cq.retornaQuarto(quarto);
+            if (dataSaida != null){
+                LocalDate dtSaida = dataSaida.toLocalDate();
+                reservas.add(new Reserva(id, quartoFinal, dtEntrada, dtSaida, qtdePessoas));
 
-            reservas.add(new Reserva(id, quartoFinal, dtEntrada, qtdePessoas));
-
+            }else {
+                reservas.add(new Reserva(id, quartoFinal, dtEntrada, qtdePessoas));
+            }
         }
 
         return reservas;
+
+    }
+
+    public Reserva retornaUmaReserva(int numeroQuarto) throws SQLException{
+        ConexaoQuarto cq = new ConexaoQuarto();
+
+        Statement stmnt = this.conn.createStatement();
+        String sql = String.format("Select * from t_pousada_reserva where id_quarto = "+ numeroQuarto +" and dt_saida is null");
+        ResultSet result = stmnt.executeQuery(sql);
+
+        if (result.next()){
+            Integer id = result.getInt("id_reserva");
+            Integer idQuarto = result.getInt("id_quarto");
+            java.sql.Date dt_entrada = result.getDate("dt_entrada");
+            Integer qtPessoas = result.getInt("id_reserva");
+
+            LocalDate dtEntrada = dt_entrada.toLocalDate();
+
+            Reserva reserva = new Reserva(id, cq.retornaQuarto(idQuarto), dtEntrada, qtPessoas);
+
+            return reserva;
+        }else {
+            return null;
+        }
 
     }
 
@@ -69,6 +98,14 @@ public class ConexaoBD {
         this.desconectaBanco(this.conn);
     }
 
+    public void uptadeReserva(Reserva reserva) throws SQLException{
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Statement stmnt = this.conn.createStatement();
+        String sql = String.format("update t_pousada_reserva set dt_saida = to_date('%s' , 'dd/mm/yyyy') where id_reserva = %s", reserva.getDataSaida().format(formatter), reserva.getId());
+        stmnt.executeUpdate(sql);
+        this.desconectaBanco(this.conn);
+    }
+
     public void desconectaBanco(Connection conn) throws SQLException{
         if(!conn.isClosed()) {conn.close();}
     }
@@ -77,4 +114,3 @@ public class ConexaoBD {
     }
 
 }
-//    to_date('%s', 'yyy/mm/dd')

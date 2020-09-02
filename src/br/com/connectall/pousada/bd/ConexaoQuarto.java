@@ -13,8 +13,8 @@ public class ConexaoQuarto {
     public ConexaoQuarto() {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            this.conn = DriverManager.getConnection("jdbc:oracle:thin:@oracle.fiap.com.br:1521:orcl", "",
-                    "");
+            this.conn = DriverManager.getConnection("jdbc:oracle:thin:@oracle.fiap.com.br:1521:orcl", "RM86433",
+                    "110701");
         } catch (ClassNotFoundException e) {
             System.err.println("O driver não foi encontrado!: " + e.getMessage());
             e.printStackTrace();
@@ -73,17 +73,10 @@ public class ConexaoQuarto {
 
     }
 
-    public boolean verificaDisponibilidadeQuarto(int numero){
-        Boolean disponivel = null;
-        try {
+    public boolean verificaDisponibilidadeQuarto(int numero) throws SQLException{
             Statement stmnt = this.conn.createStatement();
             ResultSet result = stmnt.executeQuery("select * from t_pousada_reserva where id_quarto = "+numero+"");
-            disponivel = true;
-        }catch (SQLException e){
-            e.printStackTrace();
-            disponivel = false;
-        }
-        return disponivel;
+            return result.next() ? false : true;
     }
     public void salvarQuarto(Quarto quarto){
         try {

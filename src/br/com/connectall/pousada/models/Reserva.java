@@ -1,6 +1,7 @@
 package br.com.connectall.pousada.models;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class Reserva {
     private int id;
@@ -77,6 +78,22 @@ public class Reserva {
                 "Data de Check-out: %s\n" +
                 "Quantidade de pessoas: %s\n" +
                 "______________________________", id, quarto.getNumero(), dataEntrada, dataSaida, qtdePessoas);
+    }
+
+    public void finalizarReserva(){
+        this.dataSaida = LocalDate.now();
+    }
+
+    public double calcularValorFinal() {
+
+        this.finalizarReserva();
+
+        long estadiaDias = ChronoUnit.DAYS.between(this.dataEntrada, this.dataSaida);
+
+        double valorFinal = (this.quarto.getValorDiaria() * estadiaDias);
+
+        return valorFinal;
+
     }
 
 }
