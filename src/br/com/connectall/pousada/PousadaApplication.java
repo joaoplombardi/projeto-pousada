@@ -100,6 +100,7 @@ public class PousadaApplication {
                     cbd.salvar(reserva);
                     System.out.println("| Sua reserva foi realizada!                     |");
                     System.out.println(" ------------------------------------------------ ");
+                    menu();
                 } else {
                     System.err.print("O quarto solicitado está reservado!");
                     menu();
@@ -108,8 +109,6 @@ public class PousadaApplication {
                 e.printStackTrace();
             }
         }
-
-        //        menu();
 
         try {
             cbd.desconectaBanco();
@@ -129,7 +128,6 @@ public class PousadaApplication {
 
     private static void finalizarReserva() {
         ConexaoBD cbd = new ConexaoBD();
-        ConexaoQuarto cq = new ConexaoQuarto();
         Scanner scan = new Scanner(System.in);
         Reserva reserva = new Reserva();
 
@@ -145,6 +143,7 @@ public class PousadaApplication {
             reserva.setQtdePessoas(cbd.retornaUmaReserva(numeroQuarto).getQtdePessoas());
 
             System.out.printf("Reserva finalizada!\nO valor a ser pago é R$%s", reserva.calcularValorFinal());
+            System.out.println(" ------------------------------------------------ ");
 
             cbd.uptadeReserva(reserva);
 
