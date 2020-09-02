@@ -8,6 +8,7 @@ import br.com.connectall.pousada.models.Reserva;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
 
 public class PousadaApplication {
@@ -79,13 +80,13 @@ public class PousadaApplication {
         System.out.println(" ________________________________________________ ");
         System.out.println("|                                                |");
         System.out.println("| Apartamentos de 11 a 20 | VIP de 21 a 25       |");
-        System.out.print("| Digite o quarto que deseja:                    | ");
+        System.out.print("| Digite o quarto que deseja: ");
         numeroQuarto = scan.nextInt();
         scan.nextLine();
         Quarto quarto = cq.retornaQuarto(numeroQuarto);
 
         int qtdePessoas = 0;
-        System.out.print("| Quantas pessoas ficarão hospedadas:            |");
+        System.out.print("| Quantas pessoas ficarão hospedadas:");
         qtdePessoas = scan.nextInt();
         scan.nextLine();
         if (quarto.getMaxPessoas() < qtdePessoas) {
@@ -142,10 +143,16 @@ public class PousadaApplication {
             reserva.setDataEntrada(cbd.retornaUmaReserva(numeroQuarto).getDataEntrada());
             reserva.setQtdePessoas(cbd.retornaUmaReserva(numeroQuarto).getQtdePessoas());
 
-            System.out.printf("Reserva finalizada!\nO valor a ser pago é R$%s", reserva.calcularValorFinal());
-            System.out.println(" ------------------------------------------------ ");
+            long diferancaDeDias = ChronoUnit.DAYS.between(reserva.getDataEntrada(), LocalDate.now());
 
-            cbd.uptadeReserva(reserva);
+            if (diferancaDeDias >= 2){
+                System.out.printf("Reserva finalizada!\nO valor a ser pago é R$%s", reserva.calcularValorFinal());
+                System.out.println(" ------------------------------------------------ ");
+
+                cbd.uptadeReserva(reserva);
+            }else {
+                System.err.println("Você precisa ficar hospedado no minimo dois dias na pousada.");
+            }
 
             menu();
         } catch (SQLException e) {
